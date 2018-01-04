@@ -5,6 +5,7 @@ from pprint import pprint
 from exchanges import (
     bittrex,
     bitfinex,
+    ethereum,
 )
 
 BASE_CURRENCY = 'USD'
@@ -42,6 +43,7 @@ with open('api_keys.json') as file:
     data = json.load(file)
     bittrex_creds = data['Bittrex']
     bitfinex_creds = data['Bitfinex']
+    eth_addr = data['Ethereum']['public']
 
 bittrex_portfolio = bittrex.get_balances(bittrex_creds)
 bittrex_valuation = calc_portfolio_valuation(
@@ -59,3 +61,12 @@ bitfinex_valuation = calc_portfolio_valuation(
 )
 print(f'Total bitfinex portfolio valuation {BASE_CURRENCY} {bitfinex_valuation[-1]}')
 pprint(bitfinex_valuation[:-1])
+
+eth_balance = ethereum.get_balance(eth_addr)
+eth_balance_valuation = convert_currency(
+    base='ETH',
+    target=BASE_CURRENCY,
+    quantity=eth_balance,
+)
+print(f'Total eth wallet balance {BASE_CURRENCY} {eth_balance_valuation}')
+
